@@ -1,0 +1,69 @@
+[submodule "Firmware/lib/CppUtil"]
+	path = Firmware/lib/CppUtil
+	url = https://github.com/doates625/CppUtil.git
+[submodule "Firmware/lib/LTIFilter"]
+	path = Firmware/lib/LTIFilter
+	url = https://github.com/doates625/LTIFilter.git
+[submodule "Firmware/lib/GRV"]
+	path = Firmware/lib/GRV
+	url = https://github.com/doates625/GRV.git
+[submodule "Firmware/lib/HBridge"]
+	path = Firmware/lib/HBridge
+	url = https://github.com/doates625/HBridge.git
+[submodule "Firmware/lib/Platform"]
+	path = Firmware/lib/Platform
+	url = https://github.com/doates625/Platform.git
+[submodule "Firmware/lib/DigitalOut"]
+	path = Firmware/lib/DigitalOut
+	url = https://github.com/doates625/DigitalOut.git
+[submodule "Firmware/lib/PwmOut"]
+	path = Firmware/lib/PwmOut
+	url = https://github.com/doates625/PwmOut.git
+[submodule "Firmware/lib/I2CDevice"]
+	path = Firmware/lib/I2CDevice
+	url = https://github.com/doates625/I2CDevice.git
+[submodule "Firmware/lib/Struct"]
+	path = Firmware/lib/Struct
+	url = https://github.com/doates625/Struct.git
+[submodule "Firmware/lib/MPU6050"]
+	path = Firmware/lib/MPU6050
+	url = https://github.com/doates625/MPU6050.git
+[submodule "Firmware/lib/I2CReading"]
+	path = Firmware/lib/I2CReading
+	url = https://github.com/doates625/I2CReading.git
+[submodule "Firmware/lib/PID"]
+	path = Firmware/lib/PID
+	url = https://github.com/doates625/PID.git
+[submodule "Firmware/lib/PinChangeInt"]
+	path = Firmware/lib/PinChangeInt
+	url = https://github.com/GreyGnome/PinChangeInt.git
+[submodule "Firmware/lib/QuadEncoder"]
+	path = Firmware/lib/QuadEncoder
+	url = https://github.com/doates625/QuadEncoder.git
+[submodule "Firmware/lib/DigitalIn"]
+	path = Firmware/lib/DigitalIn
+	url = https://github.com/doates625/DigitalIn.git
+[submodule "Firmware/lib/SerialStruct"]
+	path = Firmware/lib/SerialStruct
+	url = https://github.com/doates625/SerialStruct.git
+[submodule "Firmware/lib/SlewLimiter"]
+	path = Firmware/lib/SlewLimiter
+	url = https://github.com/doates625/SlewLimiter.git
+[submodule "Firmware/lib/ClampLimiter"]
+	path = Firmware/lib/ClampLimiter
+	url = https://github.com/doates625/ClampLimiter.git
+[submodule "Firmware/lib/Timer"]
+	path = Firmware/lib/Timer
+	url = https://github.com/doates625/Timer.git
+[submodule "Matlab/+controls"]
+	path = Matlab/Deps/+controls
+	url = https://github.com/doates625/controls_m.git
+[submodule "Matlab/+serial_com"]
+	path = Matlab/Deps/+serial_com
+	url = https://github.com/doates625/serial_com_m.git
+[submodule "Matlab/+timing"]
+	path = Matlab/Deps/+timing
+	url = https://github.com/doates625/timing_m.git
+[submodule "Matlab/+game_ctrl"]
+	path = Matlab/Deps/+game_ctrl
+	url = https://github.com/doates625/game_ctrl_m
