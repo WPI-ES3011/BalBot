@@ -23,6 +23,10 @@ using CppUtil::clamp;
 namespace Controller
 {
 
+	// External Constants
+	const float f_ctrl = 100.0f;
+	const float t_ctrl = 1.0f / f_ctrl;
+	
 	// State Variables
 	float lin_vel = 0.0f;		// Linear velocity [m/s]
 	float lin_vel_cmd = 0.0f;	// Linear velocity command [m/s]
