@@ -23,7 +23,9 @@ classdef BalBot < handle
             %   - lin_vel_max = Max linear velocity command [m/s]
             %   - lin_acc_max = Max linear acceleration command [m/s^2]
             %   - yaw_vel_max = Max yaw velocity command [rad/s]
-            serial_ = serial_com.make_bluetooth(bot_name);
+%             serial_ = serial_com.make_bluetooth(bot_name);
+            port  = 'auto'; baud = 57600;
+            serial_ = serial_com.make_serial(port, baud);
             obj.serial_ = serial_com.SerialStruct(serial_);
             obj.lin_vel_lim = controls.ClampLimiter(lin_vel_max);
             obj.lin_acc_lim = controls.SlewLimiter(lin_acc_max);
@@ -43,6 +45,7 @@ classdef BalBot < handle
             %   - state.yaw_vel_cmd = Limited yaw velocity [rad/s]
             %   - state.lin_vel = Robot linear velocity [m/s]
             %   - state.yaw_vel = Robot yaw velocity [rad/s]
+            %   - state.pitch = Robot pitch angle [rad]
             %   - state.volts_L = Left motor voltage [V]
             %   - state.volts_R = Right motor voltage [V]
             
@@ -59,6 +62,7 @@ classdef BalBot < handle
             state = struct();
             state.lin_vel_cmd = lin_vel_cmd;
             state.yaw_vel_cmd = yaw_vel_cmd;
+            state.pitch = obj.serial_.read('single');
             state.lin_vel = obj.serial_.read('single');
             state.yaw_vel = obj.serial_.read('single');
             state.volts_L = obj.serial_.read('single');

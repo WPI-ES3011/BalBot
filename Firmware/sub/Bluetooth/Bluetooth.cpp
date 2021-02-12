@@ -52,6 +52,7 @@ void Bluetooth::update()
 	{
 		serial.rx(lin_vel_cmd);
 		serial.rx(yaw_vel_cmd);
+		serial.tx(Imu::get_pitch());
 		serial.tx(Controller::get_lin_vel());
 		serial.tx(Imu::get_yaw_vel());
 		serial.tx(Controller::get_motor_L_cmd());
