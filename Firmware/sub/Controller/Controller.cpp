@@ -35,6 +35,7 @@ namespace Controller
 	float v_cmd_L = 0.0f;		// L motor voltage cmd [V]
 	float v_cmd_R = 0.0f;		// R motor voltage cmd [V]
 
+
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
 	// %%%%%% YOUR MODEL PARAMETERS GO IN HERE %%%%%%% //
@@ -42,8 +43,27 @@ namespace Controller
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
 	
 
+	// Controller Constants
+	const float dr_div_2 = dr/2.0f;	// Half wheel radius [m]
+	const float pitch_max = 0.8f;	// Max pitch angle [rad]
+	const float px = 20.0f;			// Pitch-velocity pole [1/s]
+
+
+	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
+	// %%%%% INSERT YOUR CONTROLLER GAINS BELOW %%%%%% //
+	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
+	const float k1 = 0.0f;
+	const float k2 = 0.0f;
+	const float k3 = 0.0f;
+	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
+
+
 	// Init Flag
 	bool init_complete = false;
+
+
+	// Controllers
+	ClampLimiter volt_limiter(Vb);
 }
 
 /**
@@ -73,12 +93,27 @@ void Controller::update()
 	lin_vel_cmd = Bluetooth::get_lin_vel_cmd();
 	yaw_vel_cmd = Bluetooth::get_yaw_vel_cmd();
 
+	// Estimate linear velocity
+	lin_vel = dr_div_2 * (MotorL::get_velocity() + MotorR::get_velocity());
 
-	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
-	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
-	// %%%%%%%% YOUR CONTROLLER GOES IN HERE %%%%%%%%% //
-	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
-	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
+	// Pitch-Velocity State-Space Control
+	float v_avg = k1 * (0.0f - Imu::get_pitch_vel()) +
+				  k2 * (0.0f - Imu::get_pitch()) +
+				  k3 * (0.0f - lin_vel);
+
+	// Clamp the voltage within the limits
+	v_avg = clamp(v_avg, -Vb, Vb);
+
+	// Motor voltage commands
+	v_cmd_L = volt_limiter.update(v_avg);
+	v_cmd_R = volt_limiter.update(v_avg);
+
+	// Disable motors if tipped over
+	if(fabsf(Imu::get_pitch()) > pitch_max)
+	{
+		v_cmd_L = 0.0f;
+		v_cmd_R = 0.0f;
+	}
 
 }
 
