@@ -47,6 +47,7 @@ namespace Controller
 	const float dr_div_2 = dr/2.0f;	// Half wheel radius [m]
 	const float pitch_max = 0.8f;	// Max pitch angle [rad]
 	const float px = 20.0f;			// Pitch-velocity pole [1/s]
+	const float pz = 80.0f;			// Yaw-velocity pole [1/s]
 
 
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
@@ -57,13 +58,28 @@ namespace Controller
 	const float k3 = 0.0f;
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
 
+	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
+	// %%%%% INSERT YOUR PID CONTROLLER GAINS BELOW %%%%%% //
+	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
+	const float Kp = 0.0f;
+	const float Ki = 0.0f;
+	const float Kd = 0.0f;
+	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% //
+
+	// State Variables
+	float lin_vel = 0.0f;		// Linear velocity [m/s]
+	float lin_vel_cmd = 0.0f;	// Linear velocity command [m/s]
+	float yaw_vel = 0.0f;		// Yaw velocity [rad/s]
+	float yaw_vel_cmd = 0.0f;	// Yaw velocity command [rad/s]
+	float v_cmd_L = 0.0f;		// L motor voltage cmd [V]
+	float v_cmd_R = 0.0f;		// R motor voltage cmd [V]
+
+	// Controllers
+	PID yaw_pid(Kp, Ki, Kd, -Vb, Vb, f_ctrl);
+	ClampLimiter volt_limiter(Vb);
 
 	// Init Flag
 	bool init_complete = false;
-
-
-	// Controllers
-	ClampLimiter volt_limiter(Vb);
 }
 
 /**
@@ -97,16 +113,22 @@ void Controller::update()
 	lin_vel = dr_div_2 * (MotorL::get_velocity() + MotorR::get_velocity());
 
 	// Pitch-Velocity State-Space Control
-	float v_avg = k1 * (0.0f - Imu::get_pitch_vel()) +
+	const float v_avg_ref = Gv * lin_vel_cmd;
+	float v_avg = v_avg_ref + k1 * (0.0f - Imu::get_pitch_vel()) +
 				  k2 * (0.0f - Imu::get_pitch()) +
-				  k3 * (0.0f - lin_vel);
+				  k3 * (lin_vel_cmd - lin_vel);
 
 	// Clamp the voltage within the limits
 	v_avg = clamp(v_avg, -Vb, Vb);
 
+	// Yaw velocity control
+	const float yaw_ff = Gw * yaw_vel_cmd;
+	const float yaw_error = yaw_vel_cmd - Imu::get_yaw_vel();
+	const float v_diff = yaw_pid.update(yaw_error, yaw_ff);
+
 	// Motor voltage commands
-	v_cmd_L = volt_limiter.update(v_avg);
-	v_cmd_R = volt_limiter.update(v_avg);
+	v_cmd_L = volt_limiter.update(v_avg - v_diff);
+	v_cmd_R = volt_limiter.update(v_avg + v_diff);
 
 	// Disable motors if tipped over
 	if(fabsf(Imu::get_pitch()) > pitch_max)
